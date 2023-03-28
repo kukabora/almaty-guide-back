@@ -31,7 +31,7 @@ from rest_framework import generics, permissions
 from .serializers import UserRegistrationSerializer
 from rest_framework.response import Response
 from rest_framework import viewsets
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponseNotFound
 from .permissions import CustomModelPermission
 from django.conf import settings
 import os
@@ -70,6 +70,11 @@ class EventViewSet(viewsets.ModelViewSet):
     queryset = Events.objects.all()
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticated, CustomModelPermission]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
 
 class TourViewSet(viewsets.ModelViewSet):
@@ -119,4 +124,4 @@ def media_view(request, file_path):
     if os.path.exists(full_file_path):
         return FileResponse(open(full_file_path, 'rb'))
     else:
-        return Response(status=404)
+        return HttpResponseNotFound('File not found')

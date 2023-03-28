@@ -14,6 +14,13 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 
+def get_base_url(request):
+    scheme = request.scheme  # "http" or "https"
+    host = request.get_host()  # The host, including the port (if specified)
+    base_url = f"{scheme}://{host}"
+    return base_url
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -43,9 +50,20 @@ class EntertainmentsEventSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Events
-        fields = '__all__'
+        fields = ['events_id', 'events_name', 'date',
+                  'description', 'location', 'price_range', 'image_url']
+
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            base_url = get_base_url(request)
+            new_image_url = f"{base_url}/api/media/events-image/{obj.image}/"
+            return new_image_url
+        return None
 
 
 class TourSerializer(serializers.ModelSerializer):
