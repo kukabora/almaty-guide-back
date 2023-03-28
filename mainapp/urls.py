@@ -6,18 +6,6 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from rest_framework import routers
-from .views import (
-    EntertainmentsPlaceViewSet,
-    EntertainmentsEventViewSet,
-    EventViewSet,
-    TourViewSet,
-    TourScheduleViewSet,
-    ToursImageViewSet,
-    FoodPlaceCategoryViewSet,
-    CuisineViewSet,
-    FoodPlacesViewSet,
-    MenuViewSet
-)
 from .views import *
 
 router = routers.DefaultRouter()
