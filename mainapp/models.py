@@ -18,7 +18,7 @@ class EntertainmentsEvent(models.Model):
     reserve_date = models.DateField()
     hall = models.IntegerField()
     description = models.CharField(max_length=100)
-    image = models.CharField(max_length=200)
+    image = models.ImageField(upload_to="entertainments-event-image/")
 
 
 class Events(models.Model):
@@ -28,7 +28,7 @@ class Events(models.Model):
     description = models.CharField(max_length=100)
     location = models.CharField(max_length=200)
     price_range = models.CharField(max_length=50)
-    image = models.CharField(max_length=200)
+    image = models.ImageField(upload_to="events-image/")
 
 
 class Tours(models.Model):
@@ -55,7 +55,7 @@ class TourSchedule(models.Model):
 class ToursImage(models.Model):
     tours_image_id = models.AutoField(primary_key=True)
     tours = models.ForeignKey(Tours, on_delete=models.CASCADE)
-    image = models.CharField(max_length=200)
+    image = models.ImageField(upload_to="tours-image/")
 
 
 class FoodPlaceCategory(models.Model):
