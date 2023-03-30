@@ -10,6 +10,12 @@ def get_base_url(request):
     return base_url
 
 
+class EntertainmentPlaceCategoriesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EntertainmentPlaceCategories
+        fields = '__all__'
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -27,9 +33,20 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 
 class EntertainmentsPlaceSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = EntertainmentsPlace
-        fields = '__all__'
+        fields = ['entertainments_place_id', 'entertainments_name', 'address',
+                  'description', 'entertainment_place_category', 'image', 'image_url']
+
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            base_url = get_base_url(request)
+            new_image_url = f"{base_url}/api/media/{obj.image}/"
+            return new_image_url
+        return None
 
 
 class EntertainmentsEventSerializer(serializers.ModelSerializer):
@@ -50,7 +67,7 @@ class EventSerializer(serializers.ModelSerializer):
         if obj.image:
             request = self.context.get('request')
             base_url = get_base_url(request)
-            new_image_url = f"{base_url}/api/media/events-image/{obj.image}/"
+            new_image_url = f"{base_url}/api/media/{obj.image}/"
             return new_image_url
         return None
 
@@ -68,9 +85,19 @@ class TourScheduleSerializer(serializers.ModelSerializer):
 
 
 class ToursImageSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = ToursImage
-        fields = '__all__'
+        fields = ['tours_image_id', 'tours', 'image', 'image_url']
+
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            base_url = get_base_url(request)
+            new_image_url = f"{base_url}/api/media/{obj.image}/"
+            return new_image_url
+        return None
 
 
 class FoodPlaceCategorySerializer(serializers.ModelSerializer):
@@ -86,9 +113,20 @@ class CuisineSerializer(serializers.ModelSerializer):
 
 
 class FoodPlacesSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = FoodPlaces
-        fields = '__all__'
+        fields = ['food_place_id', 'average_check', 'place_name',
+                  'address', 'cuisine', 'food_place_category', 'image', 'image_url']
+
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            base_url = get_base_url(request)
+            new_image_url = f"{base_url}/api/media/{obj.image}/"
+            return new_image_url
+        return None
 
 
 class MenuSerializer(serializers.ModelSerializer):

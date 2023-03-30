@@ -1,11 +1,19 @@
 from django.db import models
 
 
+class EntertainmentPlaceCategories(models.Model):
+    id = models.AutoField(primary_key=True)
+    category_name = models.CharField(max_length=50)
+
+
 class EntertainmentsPlace(models.Model):
     entertainments_place_id = models.AutoField(primary_key=True)
     entertainments_name = models.CharField(max_length=50)
     address = models.CharField(max_length=100)
     description = models.CharField(max_length=100)
+    entertainment_place_category = models.ForeignKey(
+        EntertainmentPlaceCategories, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to="entertainments-place-image/")
 
 
 class EntertainmentsEvent(models.Model):
@@ -76,6 +84,7 @@ class FoodPlaces(models.Model):
     cuisine = models.ForeignKey(Cuisine, on_delete=models.CASCADE)
     food_place_category = models.ForeignKey(
         FoodPlaceCategory, on_delete=models.SET_NULL, null=True)
+    image = models.ImageField(upload_to="food-place-image/")
 
 
 class Menu(models.Model):
@@ -84,6 +93,7 @@ class Menu(models.Model):
     food_item = models.CharField(max_length=50)
     price = models.FloatField()
     description = models.CharField(max_length=255)
+    image = models.ImageField(upload_to="menu-image/")
 
 
 class RestaurantTable(models.Model):

@@ -33,22 +33,38 @@ class UserRegistrationView(generics.CreateAPIView):
     permission_classes = [permissions.AllowAny]
 
 
+class EntertainmentPlaceCategoriesViewSet(viewsets.ModelViewSet):
+    queryset = EntertainmentPlaceCategories.objects.all()
+    serializer_class = EntertainmentPlaceCategoriesSerializer
+    permission_classes = [CustomModelPermission]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = [
+        'category_name',
+    ]
+
+
 class EntertainmentsPlaceViewSet(viewsets.ModelViewSet):
     queryset = EntertainmentsPlace.objects.all()
     serializer_class = EntertainmentsPlaceSerializer
-    permission_classes = [permissions.IsAuthenticated, CustomModelPermission]
+    permission_classes = [CustomModelPermission]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = [
         'entertainments_name',
         'address',
         'description',
+        'entertainment_place_category'
     ]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
 
 class EntertainmentsEventViewSet(viewsets.ModelViewSet):
     queryset = EntertainmentsEvent.objects.all()
     serializer_class = EntertainmentsEventSerializer
-    permission_classes = [permissions.IsAuthenticated, CustomModelPermission]
+    permission_classes = [CustomModelPermission]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = [
         'entertainments_event_name',
@@ -83,7 +99,7 @@ class EventViewSet(viewsets.ModelViewSet):
 class TourViewSet(viewsets.ModelViewSet):
     queryset = Tours.objects.all()
     serializer_class = TourSerializer
-    permission_classes = [permissions.IsAuthenticated, CustomModelPermission]
+    permission_classes = [CustomModelPermission]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = [
         'tours_name',
@@ -130,7 +146,7 @@ class RestaurantTableViewSet(viewsets.ModelViewSet):
 class TourScheduleViewSet(viewsets.ModelViewSet):
     queryset = TourSchedule.objects.all()
     serializer_class = TourScheduleSerializer
-    permission_classes = [permissions.IsAuthenticated, CustomModelPermission]
+    permission_classes = [CustomModelPermission]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = [
         'tours',
@@ -143,15 +159,20 @@ class TourScheduleViewSet(viewsets.ModelViewSet):
 class ToursImageViewSet(viewsets.ModelViewSet):
     queryset = ToursImage.objects.all()
     serializer_class = ToursImageSerializer
-    permission_classes = [permissions.IsAuthenticated, CustomModelPermission]
+    permission_classes = [CustomModelPermission]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['tours']
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
 
 class FoodPlaceCategoryViewSet(viewsets.ModelViewSet):
     queryset = FoodPlaceCategory.objects.all()
     serializer_class = FoodPlaceCategorySerializer
-    permission_classes = [permissions.IsAuthenticated, CustomModelPermission]
+    permission_classes = [CustomModelPermission]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['category_name']
 
@@ -159,7 +180,7 @@ class FoodPlaceCategoryViewSet(viewsets.ModelViewSet):
 class CuisineViewSet(viewsets.ModelViewSet):
     queryset = Cuisine.objects.all()
     serializer_class = CuisineSerializer
-    permission_classes = [permissions.IsAuthenticated, CustomModelPermission]
+    permission_classes = [CustomModelPermission]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['cuisine_name']
 
@@ -167,7 +188,7 @@ class CuisineViewSet(viewsets.ModelViewSet):
 class FoodPlacesViewSet(viewsets.ModelViewSet):
     queryset = FoodPlaces.objects.all()
     serializer_class = FoodPlacesSerializer
-    permission_classes = [permissions.IsAuthenticated, CustomModelPermission]
+    permission_classes = [CustomModelPermission]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = [
         'average_check',
@@ -177,11 +198,16 @@ class FoodPlacesViewSet(viewsets.ModelViewSet):
         'food_place_category',
     ]
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
 
 class MenuViewSet(viewsets.ModelViewSet):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
-    permission_classes = [permissions.IsAuthenticated, CustomModelPermission]
+    permission_classes = [CustomModelPermission]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = [
         'food_places',
