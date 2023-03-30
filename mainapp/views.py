@@ -1,27 +1,5 @@
-from .models import (
-    EntertainmentsPlace,
-    EntertainmentsEvent,
-    Events,
-    Tours,
-    TourSchedule,
-    ToursImage,
-    FoodPlaceCategory,
-    Cuisine,
-    FoodPlaces,
-    Menu
-)
-from .serializers import (
-    EntertainmentsPlaceSerializer,
-    EntertainmentsEventSerializer,
-    EventSerializer,
-    TourSerializer,
-    TourScheduleSerializer,
-    ToursImageSerializer,
-    FoodPlaceCategorySerializer,
-    CuisineSerializer,
-    FoodPlacesSerializer,
-    MenuSerializer
-)
+from .models import *
+from .serializers import *
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework.permissions import IsAuthenticated
@@ -30,7 +8,7 @@ from django.contrib.auth.models import User
 from rest_framework import generics, permissions
 from .serializers import UserRegistrationSerializer
 from rest_framework.response import Response
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from django.http import FileResponse, HttpResponseNotFound
 from .permissions import CustomModelPermission
 from django_filters.rest_framework import DjangoFilterBackend
@@ -86,7 +64,7 @@ class EntertainmentsEventViewSet(viewsets.ModelViewSet):
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Events.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [permissions.IsAuthenticated, CustomModelPermission]
+    permission_classes = [CustomModelPermission]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = [
         'events_name',
@@ -118,6 +96,35 @@ class TourViewSet(viewsets.ModelViewSet):
         'arrival_time',
         'cost',
     ]
+
+
+class RestaurantTableViewSet(viewsets.ModelViewSet):
+    queryset = RestaurantTable.objects.all()
+    serializer_class = RestaurantTableSerializer
+    permission_classes = [CustomModelPermission]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = [
+        'food_place',
+        'table_name',
+        'table_capacity',
+        'x',
+        'y',
+        'width',
+        'height',
+        'shape',
+        'hover_color',
+    ]
+
+    def create(self, request, *args, **kwargs):
+        is_many = isinstance(request.data, list)
+        serializer = self.get_serializer(data=request.data, many=is_many)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 
 class TourScheduleViewSet(viewsets.ModelViewSet):

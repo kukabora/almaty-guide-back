@@ -1,15 +1,4 @@
-from .models import (
-    EntertainmentsPlace,
-    EntertainmentsEvent,
-    Events,
-    Tours,
-    TourSchedule,
-    ToursImage,
-    FoodPlaceCategory,
-    Cuisine,
-    FoodPlaces,
-    Menu
-)
+from .models import *
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
@@ -106,3 +95,17 @@ class MenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Menu
         fields = '__all__'
+
+
+class RestaurantTableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RestaurantTable
+        fields = '__all__'
+
+    def create(self, validated_data):
+        if isinstance(validated_data, list):
+            tables = [RestaurantTable(**table_data)
+                      for table_data in validated_data]
+            return RestaurantTable.objects.bulk_create(tables)
+        else:
+            return super().create(validated_data)

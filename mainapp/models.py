@@ -84,3 +84,15 @@ class Menu(models.Model):
     food_item = models.CharField(max_length=50)
     price = models.FloatField()
     description = models.CharField(max_length=255)
+
+
+class RestaurantTable(models.Model):
+    food_place = models.ForeignKey(FoodPlaces, on_delete=models.CASCADE)
+    table_name = models.CharField(max_length=50)
+    table_capacity = models.IntegerField()
+    x = models.IntegerField()
+    y = models.IntegerField()
+    width = models.IntegerField()
+    height = models.IntegerField()
+    shape = models.CharField(max_length=20)
+    hover_color = models.CharField(max_length=20)

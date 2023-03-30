@@ -19,6 +19,7 @@ router.register(r'food-place-categories', FoodPlaceCategoryViewSet)
 router.register(r'cuisines', CuisineViewSet)
 router.register(r'food-places', FoodPlacesViewSet)
 router.register(r'menus', MenuViewSet)
+router.register(r'layouts', RestaurantTableViewSet)
 
 urlpatterns = [
     path('', test),
