@@ -17,6 +17,7 @@ router.register(r'tour-schedules', TourScheduleViewSet)
 router.register(r'tours-images', ToursImageViewSet)
 router.register(r'food-place-categories', FoodPlaceCategoryViewSet)
 router.register(r'cuisines', CuisineViewSet)
+router.register(r'menutypes', MenuTypeViewSet)
 router.register(r'food-places', FoodPlacesViewSet)
 router.register(r'menus', MenuViewSet)
 router.register(r'layouts', RestaurantTableViewSet)
@@ -24,8 +25,8 @@ router.register(r'entertainment-place-category',
                 EntertainmentPlaceCategoriesViewSet)
 
 urlpatterns = [
-    path('', test),
     path('test/', ProtectedView.as_view(), name='protected'),
+    path('user-info', retrieve_user_info, name='user-info'),
     path('token/', TokenObtainPairView.as_view(),
          name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

@@ -14,10 +14,23 @@ from .permissions import CustomModelPermission
 from django_filters.rest_framework import DjangoFilterBackend
 from django.conf import settings
 import os
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import InvalidToken, AuthenticationFailed
+from rest_framework_simplejwt.tokens import AccessToken
 
 
-def test(req):
-    return HttpResponse("Hello world")
+@api_view(['POST'])
+def retrieve_user_info(request):
+    token = request.data.get('token', None)
+    if token is None:
+        return Response({'error': 'Token not provided'}, status=status.HTTP_400_BAD_REQUEST)
+    access_token = AccessToken(token)
+    user = User.objects.get(id=access_token['user_id'])
+    user_data = UserSerializer(user).data
+    return Response({'user': user_data}, status=status.HTTP_200_OK)
 
 
 class ProtectedView(generics.GenericAPIView):
@@ -185,6 +198,14 @@ class CuisineViewSet(viewsets.ModelViewSet):
     filterset_fields = ['cuisine_name']
 
 
+class MenuTypeViewSet(viewsets.ModelViewSet):
+    queryset = MenuType.objects.all()
+    serializer_class = MenuTypeSerializer
+    permission_classes = [CustomModelPermission]
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['type_name']
+
+
 class FoodPlacesViewSet(viewsets.ModelViewSet):
     queryset = FoodPlaces.objects.all()
     serializer_class = FoodPlacesSerializer
@@ -211,10 +232,17 @@ class MenuViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = [
         'food_places',
+        'menu_type_id',
         'food_item',
         'price',
         'description',
+        'menu_id'
     ]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
 
 
 def media_view(request, file_path):

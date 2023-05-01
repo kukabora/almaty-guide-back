@@ -69,6 +69,7 @@ class ToursImage(models.Model):
 class FoodPlaceCategory(models.Model):
     food_place_category_id = models.AutoField(primary_key=True)
     category_name = models.CharField(max_length=50)
+    reservable = models.BooleanField(default=False)
 
 
 class Cuisine(models.Model):
@@ -87,6 +88,11 @@ class FoodPlaces(models.Model):
     image = models.ImageField(upload_to="food-place-image/")
 
 
+class MenuType(models.Model):
+    menu_type_id = models.AutoField(primary_key=True)
+    type_name = models.CharField(max_length=255)
+
+
 class Menu(models.Model):
     menu_id = models.AutoField(primary_key=True)
     food_places = models.ForeignKey(FoodPlaces, on_delete=models.CASCADE)
@@ -94,6 +100,7 @@ class Menu(models.Model):
     price = models.FloatField()
     description = models.CharField(max_length=255)
     image = models.ImageField(upload_to="menu-image/")
+    menu_type = models.ForeignKey(MenuType, on_delete=models.CASCADE)
 
 
 class RestaurantTable(models.Model):

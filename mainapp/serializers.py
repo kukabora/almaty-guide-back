@@ -3,6 +3,12 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("username", "email")
+
+
 def get_base_url(request):
     scheme = request.scheme  # "http" or "https"
     host = request.get_host()  # The host, including the port (if specified)
@@ -67,7 +73,7 @@ class EventSerializer(serializers.ModelSerializer):
         if obj.image:
             request = self.context.get('request')
             base_url = get_base_url(request)
-            new_image_url = f"{base_url}/api/media/{obj.image}/"
+            new_image_url = f"{base_url}/api/media/events-image/{obj.image}/"
             return new_image_url
         return None
 
@@ -112,13 +118,19 @@ class CuisineSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class MenuTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MenuType
+        fields = '__all__'
+
+
 class FoodPlacesSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = FoodPlaces
         fields = ['food_place_id', 'average_check', 'place_name',
-                  'address', 'cuisine', 'food_place_category', 'image', 'image_url']
+                  'address', 'cuisine', 'food_place_category', 'image_url']
 
     def get_image_url(self, obj):
         if obj.image:
@@ -130,9 +142,28 @@ class FoodPlacesSerializer(serializers.ModelSerializer):
 
 
 class MenuSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Menu
-        fields = '__all__'
+        fields = [
+            'menu_id',
+            'menu_type_id',
+            'food_places',
+            'food_item',
+            'price',
+            'description',
+            'image',
+            'image_url'
+        ]
+
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            base_url = get_base_url(request)
+            new_image_url = f"{base_url}/api/media/{obj.image}/"
+            return new_image_url
+        return None
 
 
 class RestaurantTableSerializer(serializers.ModelSerializer):
